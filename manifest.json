@@ -1,13 +1,23 @@
 {
-  "background_color": "#ffffff",
-  "dir": "ltr",
-  "display": "standalone",
-  "name": "Mecatrónica · CHISPAS",
-  "orientation": "any",
-  "scope": "/",
+  "name": "CHISPAS",
   "short_name": "CHISPAS",
-  "start_url": "/",
-  "theme_color": "#101a20",
-  "id": "\t/chispas/",
-  "description": "Mando Bluetooth para el robot CHISPAS"
+  "description": "Mando Bluetooth para el robot CHISPAS",
+  "id": "/chispas/",
+  "start_url": "/chispas/",
+  "scope": "/chispas/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#101A20",
+  "icons": [
+    {
+      "src": "./chispas-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./chispas-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }

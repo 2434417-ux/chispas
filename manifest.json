@@ -1,0 +1,13 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Mecatrónica · CHISPAS",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "CHISPAS",
+  "start_url": "/",
+  "theme_color": "#101a20",
+  "id": "\t/chispas/",
+  "description": "Mando Bluetooth para el robot CHISPAS"
+}

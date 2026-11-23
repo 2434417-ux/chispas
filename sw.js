@@ -1,4 +1,4 @@
-const CACHE = 'chispas-landscape-v2';
+const CACHE = 'chispas-landscape-gallardo-claro-v1';
 const ASSETS = ['./index.html', './manifest.json', './chispas-192.png', './chispas-512.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting()));

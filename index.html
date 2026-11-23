@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#101a20">
+  <meta name="theme-color" content="#f3efe5">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -57,16 +57,55 @@
     @media (orientation:landscape) and (max-height:360px){main{padding-top:6px;padding-bottom:6px}header{min-height:43px;padding-bottom:5px}h1{font-size:19px}#estado{margin-top:2px;font-size:10px}#conectar{min-height:33px}.mandos{padding-top:6px}.panel{padding:7px 10px;gap:1px}.motores{padding:4px 0 5px}.acciones button{min-height:36px}input[type=range]{height:18px;margin:0 0 2px}#joystick{width:min(70svh,35vw,calc(100dvh - 70px))}}
     @media (min-width:1100px) and (orientation:landscape){.consola{max-width:1200px;max-height:620px;margin:auto;border-radius:20px;position:absolute;inset:0}.marca span{font-size:19px}#joystick{width:min(52svh,360px)}}
   header > div:first-child{min-width:0;flex:1} #estado{max-width:100%}.ampliar{padding:7px 10px;min-height:38px}:fullscreen .ampliar{display:none}@media(display-mode:fullscreen){header .ampliar{display:none}}#modo{font:inherit;color:var(--turquesa);background:var(--fondo);padding:4px 8px;border:1px solid var(--linea);border-radius:7px}header #turbo{min-height:44px;min-width:82px;padding:6px 12px}
-    </style>
+    
+    :root{--fondo:#080f18;--panel:#111d29;--linea:#324150;--texto:#fbf4e9;--suave:#adbaca;--turquesa:#ff8d3e;--naranja:#9dcdf3}
+    body{background:#080f18;font-family:Barlow,"Segoe UI",sans-serif}
+    .consola{display:block;background:#0b131e;border-radius:0}
+    main{height:100%;padding-left:max(12px,env(safe-area-inset-left))}
+    header{border-bottom:2px solid #ff8438}
+    header .identidad{flex:1;min-width:0}.escudo{height:46px;width:70px;object-fit:cover;object-position:center;border-radius:4px}
+    h1{font-style:italic;letter-spacing:-.04em}h1::before{display:none}
+    .mandos{grid-template-columns:minmax(0,1.13fr) minmax(0,1fr)}
+    .base-joystick{border:1px solid var(--linea);border-radius:6px;background-color:#101a26;background-image:linear-gradient(#8ca2b110 1px,transparent 1px),linear-gradient(90deg,#8ca2b110 1px,transparent 1px);background-size:18px 18px}
+    #joystick{border-color:#26384a;background:repeating-conic-gradient(from -.5deg,#b6c1cc 0 1deg,#1d2b39 1deg 5deg);box-shadow:0 0 0 1px #607484,0 6px 16px #0008}
+    #joystick::before{border-color:#475563;background:linear-gradient(90deg,transparent 49.7%,#6f8296 50%,transparent 50.3%),linear-gradient(transparent 49.7%,#6f8296 50%,transparent 50.3%),repeating-radial-gradient(circle,transparent 0 16%,#46586c 16.4% 17%,transparent 17.4%),#172330}
+    #palanca{background:radial-gradient(circle at 38% 23%,#4b5562,#1d2834 65%);border-color:#ff9040}#palanca::after{background:#ff9040;border:0}
+    .panel{background:linear-gradient(130deg,#1a2735,#101a27);border-radius:6px}
+    button,#modo{border-radius:5px}button{background:#1d2a39;border-color:#49596b;color:var(--texto)}
+    header #turbo{background:#ff8536;color:#111923;min-width:clamp(78px,14vw,145px);font-size:1.12em;font-style:italic;text-transform:uppercase;letter-spacing:.08em}
+    #turbo[aria-pressed=true]{background:#ffcb8a}input[type=range]{accent-color:#ff8d3e}
+    #detener{border-color:#a76757;background:#392726;color:#ffcebf}
+    @media(orientation:landscape) and (max-height:365px){.escudo{height:34px;width:56px}.panel .acciones button{min-height:32px}}
+    
+    :root{color-scheme:light;--fondo:#f3efe5;--panel:#fffdf8;--linea:#c9c4b6;--texto:#24241f;--suave:#53554d;--turquesa:#aa390c;--naranja:#574938}
+    body,.consola,.gira{background:#f3efe5;color:var(--texto)}
+    .consola{border:0}.escudo{border-radius:7px}
+    header{border-color:#282924}h1{letter-spacing:-.045em}
+    button,#modo{color:#282823;background:#fffdf8;border-color:#aca99e}
+    button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #a63200}
+    header #turbo{background:#ff813a;border-color:#c54609;color:#261609}
+    .mandos{grid-template-columns:minmax(0,1.36fr) minmax(0,1fr);gap:clamp(8px,1.4vw,22px)}
+    .base-joystick{container-type:size;border-radius:12px;border-color:#c9c4b6;background-color:#e8e4d7;background-image:radial-gradient(#8e897b70 1px,transparent 1px);background-size:12px 12px}
+    #joystick{width:min(52vw,calc(100dvh - 72px));width:min(97cqw,97cqh);height:auto;aspect-ratio:1;border:3px solid #35362f;background:repeating-conic-gradient(from -1deg,#e2dfd0 0 1.2deg,#4b4c42 1.2deg 5deg);box-shadow:0 2px 5px #514c3b4a}
+    #joystick::before{inset:3.4%;border-color:#898679;background:linear-gradient(90deg,transparent 49.7%,#a99d85 50%,transparent 50.3%),linear-gradient(transparent 49.7%,#a99d85 50%,transparent 50.3%),repeating-radial-gradient(circle,transparent 0 15.8%,#aba69780 16.2% 16.6%,transparent 17%),radial-gradient(circle,#fffaf0,#ddd8c9)}
+    #palanca{background:radial-gradient(circle at 38% 29%,#ffbd7e,#ff7725 62%,#ca4710);border:3px solid #903709;box-shadow:0 5px 10px #55432f55,inset 0 1px 2px #ffedcb}
+    #palanca::after{background:#713016;inset:42%}
+    .panel{background:#fffdf8;border-color:#c9c4b6;border-radius:12px}
+    #modo{color:#493e31;background:#f4eee2}
+    .pista{background:#dfdbcf}.pista::after{border-color:#7b796d}
+    #detener{background:#362e2a;color:#fff4de;border-color:#362e2a}
+    input[type=range]{accent-color:#c54712}
+    @media(orientation:portrait){.gira{background:#f3efe5}}
+  </style>
 </head>
 <body>
   <div class="consola">
-    <aside class="marca"><span>CHISPAS</span></aside>
+    
     <main>
       <header>
-        <div><h1>MECATRÓNICA</h1><span id="estado" role="status">Desconectado</span></div>
+        <img class="escudo" src="./chispas-192.png" alt="CHISPAS"><div class="identidad"><h1>MECATRÓNICA</h1><span id="estado" role="status">Desconectado</span></div>
         <button type="button" class="ampliar">Pantalla completa</button><button id="conectar" type="button">Conectar</button>
-        <button id="turbo" type="button" aria-pressed="false">ϟ Turbo</button>
+        <button id="turbo" type="button" aria-pressed="false">Turbo</button>
       </header>
       <div class="mandos">
         <div class="base-joystick">
@@ -79,12 +118,12 @@
           </div>
           <div class="ajuste">
             <label for="modo">Sensibilidad <select id="modo"><option value="play">Control de Play</option><option value="manual">Manual</option></select></label>
-            <div id="ajusteManual" hidden><label for="giro">Giro manual <output id="valorGiro">100 %</output></label>
-            <input id="giro" type="range" min="0" max="100" value="100"></div>
+            <div id="ajusteManual" hidden><label for="giro">Giro manual <output id="valorGiro">34 %</output></label>
+            <input id="giro" type="range" min="0" max="100" value="34"></div>
           </div>
           <div class="motores" aria-label="PWM solicitado">
-            <div><div class="lectura">Izquierdo <output id="izq">0 %</output></div><div class="pista"><i class="barra" id="barraIzq"></i></div></div>
-            <div><div class="lectura">Derecho <output id="der">0 %</output></div><div class="pista"><i class="barra" id="barraDer"></i></div></div>
+            <div><div class="lectura">PWM izquierdo <output id="izq">0 %</output></div><div class="pista"><i class="barra" id="barraIzq"></i></div></div>
+            <div><div class="lectura">PWM derecho <output id="der">0 %</output></div><div class="pista"><i class="barra" id="barraDer"></i></div></div>
           </div>
           <div class="acciones">
             <button id="detener" type="button">■ Detener</button>
@@ -136,8 +175,9 @@
       const limiteNormal = Number(el("limite").value);
       const modoPlay = el("modo").value === "play";
       const limiteActual = dedoTurbo === null ? limiteNormal : 100;
-      const avance = modoPlay ? y : aplicarZonaMuerta(y);
-      const giro = modoPlay ? x : aplicarZonaMuerta(x) * Number(el("giro").value) / 100;
+      const avance = aplicarZonaMuerta(y);
+      const sensibilidad = modoPlay ? 34 : Number(el("giro").value);
+      const giro = aplicarZonaMuerta(x) * sensibilidad / 100;
       pwmIzq = Math.round(limiteActual * limitar(avance + giro));
       pwmDer = Math.round(limiteActual * limitar(avance - giro));
       el("valorLimite").value = limiteNormal + " %";

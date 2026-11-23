@@ -1,342 +1,88 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <link rel="manifest" href="./manifest.json">
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#101a20">
-  <title>Mecatrónica · CHISPAS</title>
-
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="./manifest.json">
+  <title>CHISPAS | MECATRÓNICA</title>
   <style>
-    :root {
-      color-scheme: dark;
-      --fondo: #0c1419;
-      --panel: #19272e;
-      --linea: #354a50;
-      --texto: #edf7f5;
-      --suave: #adc1bf;
-      --turquesa: #78f6d2;
-      --naranja: #ffa26e;
-      --mono: "IBM Plex Mono", Consolas, monospace;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100svh;
-      display: grid;
-      place-items: center;
-      color: var(--texto);
-      font: 16px "Barlow", "Segoe UI", sans-serif;
-      background:
-        radial-gradient(ellipse at 15% 0%, #26434b, transparent 55%),
-        var(--fondo);
-    }
-
-    button, input { font: inherit; }
-
-    button {
-      min-height: 44px;
-      padding: 10px 16px;
-      border: 1px solid #52716c;
-      border-radius: 10px;
-      background: #203633;
-      color: var(--turquesa);
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    button:disabled { opacity: .55; }
-
-    button:focus-visible, input:focus-visible {
-      outline: 3px solid white;
-      outline-offset: 3px;
-    }
-
-    .consola {
-      width: min(960px, 100%);
-      display: grid;
-      grid-template-columns: 42px minmax(0, 1fr);
-      overflow: hidden;
-      background: #131e25;
-      border: 1px solid #384b53;
-      border-radius: 22px;
-      box-shadow: 0 25px 70px #0005;
-    }
-
-    .marca {
-      display: grid;
-      place-items: center;
-      border-right: 1px solid var(--linea);
-      background:
-        repeating-linear-gradient(-45deg, transparent 0 12px, #ffffff05 12px 14px),
-        #192b30;
-    }
-
-    .marca span {
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
-      color: var(--turquesa);
-      font: 800 18px var(--mono);
-      letter-spacing: .4em;
-    }
-
-    main { min-width: 0; padding: clamp(14px, 3vw, 32px); }
-
-    header, label, .lectura, .acciones {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    header {
-      padding-bottom: 15px;
-      border-bottom: 1px solid var(--linea);
-    }
-
-    h1 {
-      margin: 0;
-      font: 800 clamp(22px, 4.2vw, 42px)/1 "Barlow Condensed", "Arial Narrow", sans-serif;
-      letter-spacing: -.045em;
-    }
-
-    h1::before {
-      content: "";
-      display: inline-block;
-      width: .2em;
-      height: .72em;
-      margin-right: .24em;
-      transform: skew(-17deg);
-      background: var(--turquesa);
-    }
-
-    #estado {
-      display: block;
-      margin-top: 8px;
-      color: var(--suave);
-      font-size: 13px;
-    }
-
-    #estado::before {
-      content: "";
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      margin-right: 7px;
-      border-radius: 50%;
-      background: #809196;
-    }
-
-    #estado.conectado::before {
-      background: var(--turquesa);
-      box-shadow: 0 0 8px var(--turquesa);
-    }
-
-    .mandos {
-      display: grid;
-      grid-template-columns: 1.05fr 1fr;
-      align-items: center;
-      gap: clamp(14px, 3vw, 32px);
-      margin-top: 18px;
-    }
-
-    .base-joystick {
-      display: grid;
-      place-items: center;
-      padding: 12px;
-      border-radius: 16px;
-      background-image: radial-gradient(#59737b66 .8px, transparent .9px);
-      background-size: 12px 12px;
-    }
-
-    #joystick {
-      position: relative;
-      width: min(100%, 52svh, 320px);
-      aspect-ratio: 1;
-      touch-action: none;
-      user-select: none;
-      -webkit-user-select: none;
-      border: 5px solid #26363e;
-      border-radius: 50%;
-      background: repeating-conic-gradient(
-        from -1deg, #74969a 0 1deg, #223238 1deg 6deg
-      );
-      box-shadow: 0 0 0 1px #587279, 0 8px 16px #0007;
-    }
-
-    #joystick::before {
-      content: "";
-      position: absolute;
-      inset: 3%;
-      border: 1px solid #516869;
-      border-radius: 50%;
-      background:
-        linear-gradient(90deg, transparent 49.7%, #49635e 50%, transparent 50.3%),
-        linear-gradient(transparent 49.7%, #49635e 50%, transparent 50.3%),
-        repeating-radial-gradient(circle, transparent 0 16%, #65827844 16.4% 17%, transparent 17.4%),
-        radial-gradient(circle, #293e3d, #142024);
-    }
-
-    #palanca {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 24%;
-      aspect-ratio: 1;
-      transform: translate(-50%, -50%);
-      border: 2px solid #95e9d4;
-      border-radius: 50%;
-      pointer-events: none;
-      background: radial-gradient(circle at 36% 24%, #94afa9, #354d4b 55%, #182b2a);
-      box-shadow: 0 6px 12px #000a;
-    }
-
-    #palanca::after {
-      content: "";
-      position: absolute;
-      inset: 36%;
-      border: 2px solid var(--turquesa);
-      border-radius: 50%;
-    }
-
-    .panel {
-      min-width: 0;
-      padding: 16px;
-      border: 1px solid var(--linea);
-      border-radius: 14px;
-      background: var(--panel);
-    }
-
-    label { font-weight: 600; }
-
-    output {
-      color: var(--turquesa);
-      font: 700 14px var(--mono);
-      font-variant-numeric: tabular-nums;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      height: 25px;
-      margin: 3px 0 10px;
-      accent-color: var(--turquesa);
-    }
-
-    .motores {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      padding: 12px 0 16px;
-      border-top: 1px solid var(--linea);
-    }
-
-    .lectura { color: var(--suave); font-size: 13px; }
-
-    .pista {
-      position: relative;
-      height: 6px;
-      margin-top: 7px;
-      background: #0d181d;
-    }
-
-    .pista::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      height: 100%;
-      border-left: 1px solid #92a7a2;
-    }
-
-    .barra { position: absolute; height: 100%; }
-    .acciones button { flex: 1; }
-
-    #turbo {
-      color: #0d3028;
-      background: var(--turquesa);
-      touch-action: none;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    #turbo[aria-pressed="true"] {
-      background: white;
-      box-shadow: 0 0 16px #78f6d280;
-    }
-
-    #detener {
-      background: #342a28;
-      color: #ffc6a9;
-      border-color: #815c4c;
-    }
-
-    @media (orientation: portrait) {
-      .consola { grid-template-columns: 27px minmax(0, 1fr); }
-      .marca span { font-size: 15px; }
-      .mandos { grid-template-columns: 1fr; }
-      #joystick { width: min(61vw, 33svh); }
-    }
-
-    @media (orientation: landscape) and (max-height: 480px) {
-      .consola { border-radius: 0; }
-      main { padding: 10px 18px; }
-      header { padding-bottom: 8px; }
-      .mandos { margin-top: 10px; }
-      .panel { padding: 10px 14px; }
-      .motores { padding: 6px 0 10px; }
-      input[type="range"] { margin-bottom: 4px; }
-    }
-  </style>
+    :root{color-scheme:dark;--fondo:#0c1419;--panel:#19272e;--linea:#354a50;--texto:#edf7f5;--suave:#adc1bf;--turquesa:#78f6d2;--naranja:#ffa26e;--mono:Consolas,monospace}
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
+    body{color:var(--texto);font:clamp(12px,1.7vw,16px) 'Segoe UI',Arial,sans-serif;background:radial-gradient(ellipse at 15% 0%,#26434b,transparent 55%),var(--fondo)}
+    button,input{font:inherit}
+    button{border:1px solid #52716c;border-radius:12px;color:var(--turquesa);font-weight:800;background:#203633;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+    button:disabled{opacity:.55}
+    button:focus-visible,input:focus-visible{outline:2px solid white;outline-offset:3px}
+    .consola{width:100%;height:100%;height:100dvh;display:grid;grid-template-columns:34px minmax(0,1fr);overflow:hidden;background:#131e25;border:1px solid #384b53}
+    .marca{display:grid;place-items:center;border-right:1px solid var(--linea);background:repeating-linear-gradient(-45deg,transparent 0 12px,#ffffff05 12px 14px),#192b30}
+    .marca span{writing-mode:vertical-rl;transform:rotate(180deg);color:var(--turquesa);font:800 15px var(--mono);letter-spacing:.28em}
+    main{min-width:0;min-height:0;display:flex;flex-direction:column;padding:clamp(8px,1.9vh,16px) clamp(10px,2vw,24px);padding-top:max(8px,env(safe-area-inset-top));padding-right:max(12px,env(safe-area-inset-right));padding-bottom:max(8px,env(safe-area-inset-bottom))}
+    header{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid var(--linea);padding:0 2px 8px;flex:none;min-height:50px}
+    h1{margin:0;line-height:1;font-weight:900;font-size:clamp(18px,3vw,29px);letter-spacing:-.055em}
+    h1::before{content:'';display:inline-block;width:.2em;height:.73em;margin-right:.24em;transform:skew(-16deg);background:var(--turquesa)}
+    #estado{display:block;margin-top:5px;max-width:65vw;color:var(--suave);font-size:clamp(10px,1.3vw,13px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #estado::before{content:'';display:inline-block;width:7px;height:7px;margin-right:6px;border-radius:50%;background:#809196}
+    #estado.conectado::before{background:var(--turquesa);box-shadow:0 0 8px var(--turquesa)}
+    #conectar{flex:none;min-width:106px;min-height:38px;padding:7px 15px}
+    .mandos{min-height:0;flex:1;display:grid;grid-template-columns:minmax(0,.96fr) minmax(0,1.04fr);gap:clamp(10px,2.2vw,25px);align-items:stretch;padding-top:clamp(7px,1.4vh,15px)}
+    .base-joystick{min-width:0;min-height:0;display:grid;place-items:center;border-radius:14px;background-image:radial-gradient(#59737b66 .8px,transparent .9px);background-size:12px 12px}
+    #joystick{position:relative;width:min(69svh,36vw,350px,calc(100dvh - 102px));aspect-ratio:1;max-height:100%;touch-action:none;user-select:none;-webkit-user-select:none;border:5px solid #26363e;border-radius:50%;background:repeating-conic-gradient(from -1deg,#74969a 0 1deg,#223238 1deg 6deg);box-shadow:0 0 0 1px #587279,0 8px 16px #0007}
+    #joystick::before{content:'';position:absolute;inset:3%;border:1px solid #516869;border-radius:50%;background:linear-gradient(90deg,transparent 49.7%,#49635e 50%,transparent 50.3%),linear-gradient(transparent 49.7%,#49635e 50%,transparent 50.3%),repeating-radial-gradient(circle,transparent 0 16%,#65827844 16.4% 17%,transparent 17.4%),radial-gradient(circle,#293e3d,#142024)}
+    #palanca{position:absolute;left:50%;top:50%;width:24%;aspect-ratio:1;transform:translate(-50%,-50%);border:2px solid #95e9d4;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 36% 24%,#94afa9,#354d4b 55%,#182b2a);box-shadow:0 6px 12px #000a}
+    #palanca::after{content:'';position:absolute;inset:36%;border:2px solid var(--turquesa);border-radius:50%}
+    .panel{min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:space-evenly;gap:3px;padding:clamp(9px,1.5vw,16px);border:1px solid var(--linea);border-radius:14px;background:var(--panel)}
+    .ajuste{min-height:0}
+    label,.lectura,.acciones{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    label{font-weight:650}
+    output{color:var(--turquesa);font:800 clamp(12px,1.7vw,17px) var(--mono);white-space:nowrap;font-variant-numeric:tabular-nums}
+    input[type=range]{display:block;width:100%;height:22px;margin:2px 0 4px;accent-color:var(--turquesa);touch-action:pan-x}
+    .motores{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:8px 0 9px;border-top:1px solid var(--linea);border-bottom:1px solid var(--linea)}
+    .lectura{color:var(--suave);font-size:clamp(11px,1.4vw,14px)}
+    .lectura output{font-size:clamp(11px,1.4vw,14px)}
+    .pista{position:relative;height:7px;margin-top:7px;background:#0d181d;border-radius:3px;overflow:hidden}
+    .pista::after{content:'';position:absolute;left:50%;height:100%;border-left:1px solid #92a7a2}
+    .barra{position:absolute;height:100%}
+    .acciones{gap:10px}
+    .acciones button{flex:1;min-width:0;min-height:44px;padding:8px}
+    #turbo{color:#0d3028;background:var(--turquesa);touch-action:none;user-select:none;-webkit-user-select:none}
+    #turbo[aria-pressed=true]{background:white;box-shadow:0 0 16px #78f6d280}
+    #detener{background:#342a28;color:#ffc6a9;border-color:#815c4c}
+    .gira{display:none}
+    @media (orientation:portrait){.consola{visibility:hidden}.gira{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:25px;background:#101a20;text-align:center}.gira .simbolo{font-size:70px;color:var(--turquesa)}.gira strong{font-size:22px}.gira small{color:var(--suave);max-width:300px;line-height:1.5}}
+    @media (orientation:landscape) and (max-height:360px){main{padding-top:6px;padding-bottom:6px}header{min-height:43px;padding-bottom:5px}h1{font-size:19px}#estado{margin-top:2px;font-size:10px}#conectar{min-height:33px}.mandos{padding-top:6px}.panel{padding:7px 10px;gap:1px}.motores{padding:4px 0 5px}.acciones button{min-height:36px}input[type=range]{height:18px;margin:0 0 2px}#joystick{width:min(70svh,35vw,calc(100dvh - 70px))}}
+    @media (min-width:1100px) and (orientation:landscape){.consola{max-width:1200px;max-height:620px;margin:auto;border-radius:20px;position:absolute;inset:0}.marca span{font-size:19px}#joystick{width:min(52svh,360px)}}
+  header > div:first-child{min-width:0;flex:1} #estado{max-width:100%}.ampliar{padding:7px 10px;min-height:38px}:fullscreen .ampliar{display:none}@media(display-mode:fullscreen){header .ampliar{display:none}}</style>
 </head>
-
 <body>
   <div class="consola">
     <aside class="marca"><span>CHISPAS</span></aside>
-
     <main>
       <header>
-        <div>
-          <h1>MECATRÓNICA</h1>
-          <span id="estado" role="status">Desconectado</span>
-        </div>
-        <button id="conectar" type="button">Conectar</button>
+        <div><h1>MECATRÓNICA</h1><span id="estado" role="status">Desconectado</span></div>
+        <button type="button" class="ampliar">Pantalla completa</button><button id="conectar" type="button">Conectar</button>
       </header>
-
       <div class="mandos">
         <div class="base-joystick">
-          <div id="joystick" role="group" aria-label="Joystick táctil de conducción">
-            <div id="palanca"></div>
-          </div>
+          <div id="joystick" role="group" aria-label="Joystick táctil de conducción"><div id="palanca"></div></div>
         </div>
-
         <section class="panel" aria-label="Ajustes de conducción">
-          <label for="limite">
-            Límite normal <output id="valorLimite">59 %</output>
-          </label>
-          <input id="limite" type="range" min="0" max="100" value="59">
-
-          <label for="giro">
-            Sensibilidad de giro <output id="valorGiro">100 %</output>
-          </label>
-          <input id="giro" type="range" min="0" max="100" value="100">
-
-          <div class="motores" aria-label="PWM solicitado">
-            <div>
-              <div class="lectura">
-                Izquierdo <output id="izq">0 %</output>
-              </div>
-              <div class="pista"><i class="barra" id="barraIzq"></i></div>
-            </div>
-
-            <div>
-              <div class="lectura">
-                Derecho <output id="der">0 %</output>
-              </div>
-              <div class="pista"><i class="barra" id="barraDer"></i></div>
-            </div>
+          <div class="ajuste">
+            <label for="limite">Límite normal <output id="valorLimite">59 %</output></label>
+            <input id="limite" type="range" min="0" max="100" value="59">
           </div>
-
+          <div class="ajuste">
+            <label for="giro">Sensibilidad de giro <output id="valorGiro">100 %</output></label>
+            <input id="giro" type="range" min="0" max="100" value="100">
+          </div>
+          <div class="motores" aria-label="PWM solicitado">
+            <div><div class="lectura">Izquierdo <output id="izq">0 %</output></div><div class="pista"><i class="barra" id="barraIzq"></i></div></div>
+            <div><div class="lectura">Derecho <output id="der">0 %</output></div><div class="pista"><i class="barra" id="barraDer"></i></div></div>
+          </div>
           <div class="acciones">
             <button id="turbo" type="button" aria-pressed="false">ϟ Turbo</button>
             <button id="detener" type="button">■ Detener</button>
@@ -345,26 +91,22 @@
       </div>
     </main>
   </div>
-
+  <div class="gira" aria-live="polite"><div class="simbolo">↻</div><strong>Gira tu teléfono</strong><small>CHISPAS está diseñado para control horizontal. Toca Pantalla completa. Si sigue vertical, activa la rotación automática y gira el teléfono.</small><button type="button" class="ampliar">Pantalla completa</button></div>
   <script>
-    // Coinciden con UUID_SERVICIO y UUID_RX del main.py.
+    // Mismo protocolo Bluetooth BLE del código original de CHISPAS.
     const SERVICIO = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
     const RX = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
-
     const INTERVALO_MS = 50;
     const ZONA_MUERTA = 0.07;
-
     const el = id => document.getElementById(id);
     const joystick = el("joystick");
     const palanca = el("palanca");
     const turbo = el("turbo");
     const conectar = el("conectar");
     const codificador = new TextEncoder();
-
     let dispositivo = null;
     let canal = null;
     let escrituraEnCurso = null;
-
     let dedoJoystick = null;
     let dedoTurbo = null;
     let origenX = 0;
@@ -379,138 +121,91 @@
       el("estado").classList.toggle("conectado", conectado);
       conectar.textContent = conectado ? "Desconectar" : "Conectar";
     }
-
     function aplicarZonaMuerta(valor) {
       const magnitud = Math.max(0, Math.abs(valor) - ZONA_MUERTA);
       return Math.sign(valor) * magnitud / (1 - ZONA_MUERTA);
     }
-
-    function limitar(valor) {
-      return Math.max(-1, Math.min(1, valor));
-    }
-
+    function limitar(valor) { return Math.max(-1, Math.min(1, valor)); }
     function mostrarMotor(salida, barra, valor) {
       salida.value = (valor > 0 ? "+" : "") + valor + " %";
       barra.style.left = (50 + Math.min(0, valor) / 2) + "%";
       barra.style.width = Math.abs(valor) / 2 + "%";
-      barra.style.backgroundColor = valor < 0
-        ? "var(--naranja)"
-        : "var(--turquesa)";
+      barra.style.backgroundColor = valor < 0 ? "var(--naranja)" : "var(--turquesa)";
     }
-
     function calcularMotores() {
       const limiteNormal = Number(el("limite").value);
       const sensibilidad = Number(el("giro").value);
       const limiteActual = dedoTurbo === null ? limiteNormal : 100;
-
       const avance = aplicarZonaMuerta(y);
       const giro = aplicarZonaMuerta(x) * sensibilidad / 100;
-
       pwmIzq = Math.round(limiteActual * limitar(avance + giro));
       pwmDer = Math.round(limiteActual * limitar(avance - giro));
-
       el("valorLimite").value = limiteNormal + " %";
       el("valorGiro").value = sensibilidad + " %";
       mostrarMotor(el("izq"), el("barraIzq"), pwmIzq);
       mostrarMotor(el("der"), el("barraDer"), pwmDer);
     }
-
     function centrarJoystick() {
       dedoJoystick = null;
-      x = 0;
-      y = 0;
+      x = 0; y = 0;
       palanca.style.left = "50%";
       palanca.style.top = "50%";
       calcularMotores();
     }
-
     function neutralizar() {
       dedoTurbo = null;
       turbo.setAttribute("aria-pressed", "false");
       centrarJoystick();
     }
-
     function desconectar(mensaje) {
       const anterior = dispositivo;
-      dispositivo = null;
-      canal = null;
-      escrituraEnCurso = null;
+      dispositivo = null; canal = null; escrituraEnCurso = null;
       neutralizar();
-
-      if (anterior && anterior.gatt.connected) {
-        anterior.gatt.disconnect();
-      }
-
+      if (anterior && anterior.gatt.connected) anterior.gatt.disconnect();
       mostrarEstado(mensaje);
     }
-
     async function enviar() {
       const destino = canal;
       if (!destino || escrituraEnCurso) return;
-
       escrituraEnCurso = destino;
       try {
-        // La ESP32 recibe, por ejemplo, M,20,20 seguido de salto de línea.
         const orden = `M,${pwmIzq},${pwmDer}\n`;
         await destino.writeValueWithoutResponse(codificador.encode(orden));
-      } catch (error) {
-        if (canal === destino) {
-          desconectar("Error al enviar: " + error.message);
-        }
+      } catch(error) {
+        if (canal === destino) desconectar("Error al enviar: " + error.message);
       } finally {
         if (escrituraEnCurso === destino) escrituraEnCurso = null;
       }
     }
-
     conectar.addEventListener("click", async () => {
-      if (canal) {
-        desconectar("Desconectado");
-        return;
-      }
-
+      if (canal) { desconectar("Desconectado"); return; }
       if (!window.isSecureContext || !navigator.bluetooth) {
-        mostrarEstado("Abre la página por HTTPS en Chrome para Android.");
+        mostrarEstado("Usa Chrome para Android con HTTPS y Bluetooth disponible.");
         return;
       }
-
       conectar.disabled = true;
       try {
-        const elegido = await navigator.bluetooth.requestDevice({
-          filters: [{ namePrefix: "CHISPAS-" }],
-          optionalServices: [SERVICIO]
-        });
-
+        const elegido = await navigator.bluetooth.requestDevice({filters:[{namePrefix:"CHISPAS-"}],optionalServices:[SERVICIO]});
         dispositivo = elegido;
-        elegido.addEventListener("gattserverdisconnected", () => {
+        elegido.addEventListener("gattserverdisconnected",()=>{
           if (dispositivo === elegido) desconectar("Enlace perdido");
-        }, { once: true });
-
+        },{once:true});
         mostrarEstado("Conectando con " + elegido.name + "…");
-
         const servidor = await elegido.gatt.connect();
         const servicio = await servidor.getPrimaryService(SERVICIO);
         const entrada = await servicio.getCharacteristic(RX);
-
         if (dispositivo !== elegido) return;
-
         neutralizar();
         canal = entrada;
-        mostrarEstado("Conectado · " + elegido.name, true);
+        mostrarEstado("Conectado · " + elegido.name,true);
         await enviar();
-      } catch (error) {
-        const mensaje = error.name === "NotFoundError"
-          ? "Selección cancelada o CHISPAS no encontrado."
-          : "Error BLE: " + error.message;
+      } catch(error) {
+        const mensaje = error.name === "NotFoundError" ? "Selección cancelada o CHISPAS no encontrado." : "Error BLE: " + error.message;
         desconectar(mensaje);
-      } finally {
-        conectar.disabled = false;
-      }
+      } finally { conectar.disabled = false; }
     });
-
     joystick.addEventListener("pointerdown", evento => {
       if (dedoJoystick !== null) return;
-
-      // El primer toque fija el punto neutro, incluso cerca del borde.
       centrarJoystick();
       dedoJoystick = evento.pointerId;
       origenX = evento.clientX;
@@ -518,70 +213,61 @@
       joystick.setPointerCapture(dedoJoystick);
       enviar();
     });
-
     joystick.addEventListener("pointermove", evento => {
       if (evento.pointerId !== dedoJoystick) return;
-
-      const radio = joystick.getBoundingClientRect().width * 0.38;
+      const radio = joystick.getBoundingClientRect().width * .38;
       x = (evento.clientX - origenX) / radio;
       y = (origenY - evento.clientY) / radio;
-
-      const magnitud = Math.max(1, Math.hypot(x, y));
-      x /= magnitud;
-      y /= magnitud;
-
+      const magnitud = Math.max(1,Math.hypot(x,y));
+      x /= magnitud; y /= magnitud;
       palanca.style.left = (50 + 38 * x) + "%";
       palanca.style.top = (50 - 38 * y) + "%";
       calcularMotores();
     });
-
     turbo.addEventListener("pointerdown", evento => {
       if (dedoTurbo !== null) return;
-
       dedoTurbo = evento.pointerId;
       turbo.setPointerCapture(dedoTurbo);
-      turbo.setAttribute("aria-pressed", "true");
-      calcularMotores();
-      enviar();
+      turbo.setAttribute("aria-pressed","true");
+      calcularMotores(); enviar();
     });
-
-    for (const tipo of ["pointerup", "pointercancel", "lostpointercapture"]) {
+    for (const tipo of ["pointerup","pointercancel","lostpointercapture"]) {
       joystick.addEventListener(tipo, evento => {
         if (evento.pointerId !== dedoJoystick) return;
-        centrarJoystick();
-        enviar();
+        centrarJoystick(); enviar();
       });
-
       turbo.addEventListener(tipo, evento => {
         if (evento.pointerId !== dedoTurbo) return;
         dedoTurbo = null;
-        turbo.setAttribute("aria-pressed", "false");
-        calcularMotores();
-        enviar();
+        turbo.setAttribute("aria-pressed","false");
+        calcularMotores(); enviar();
       });
     }
-
-    function detener() {
-      neutralizar();
-      enviar();
-    }
-
-    el("limite").addEventListener("input", calcularMotores);
-    el("giro").addEventListener("input", calcularMotores);
-    el("detener").addEventListener("pointerdown", detener);
-    el("detener").addEventListener("click", detener);
-    window.addEventListener("blur", detener);
-
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) detener();
-    });
-
-    // Repite la orden mientras sostienes el dedo en una posición.
-    setInterval(() => {
-      if (!document.hidden) enviar();
-    }, INTERVALO_MS);
-
+    function detener() { neutralizar(); enviar(); }
+    el("limite").addEventListener("input",calcularMotores);
+    el("giro").addEventListener("input",calcularMotores);
+    el("detener").addEventListener("pointerdown",detener);
+    el("detener").addEventListener("click",detener);
+    window.addEventListener("blur",detener);
+    document.addEventListener("visibilitychange",()=>{if(document.hidden)detener();});
+    setInterval(()=>{if(!document.hidden)enviar();},INTERVALO_MS);
     calcularMotores();
+    // Service worker: instala el acceso directo de pantalla completa y permite reabrir sin red.
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+    }
+  </script>
+<script>
+    async function abrirHorizontal() {
+      try {
+        if (!document.fullscreenElement && document.documentElement.requestFullscreen)
+          await document.documentElement.requestFullscreen();
+      } catch (error) { console.info("Pantalla completa", error.message); }
+      try {
+        await screen.orientation.lock("landscape");
+      } catch (error) { console.info("Giro manual", error.message); }
+    }
+    document.querySelectorAll(".ampliar").forEach(button => button.addEventListener("click", abrirHorizontal));
   </script>
 </body>
 </html>

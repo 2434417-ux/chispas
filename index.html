@@ -56,7 +56,8 @@
     @media (orientation:portrait){.consola{visibility:hidden}.gira{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:25px;background:#101a20;text-align:center}.gira .simbolo{font-size:70px;color:var(--turquesa)}.gira strong{font-size:22px}.gira small{color:var(--suave);max-width:300px;line-height:1.5}}
     @media (orientation:landscape) and (max-height:360px){main{padding-top:6px;padding-bottom:6px}header{min-height:43px;padding-bottom:5px}h1{font-size:19px}#estado{margin-top:2px;font-size:10px}#conectar{min-height:33px}.mandos{padding-top:6px}.panel{padding:7px 10px;gap:1px}.motores{padding:4px 0 5px}.acciones button{min-height:36px}input[type=range]{height:18px;margin:0 0 2px}#joystick{width:min(70svh,35vw,calc(100dvh - 70px))}}
     @media (min-width:1100px) and (orientation:landscape){.consola{max-width:1200px;max-height:620px;margin:auto;border-radius:20px;position:absolute;inset:0}.marca span{font-size:19px}#joystick{width:min(52svh,360px)}}
-  header > div:first-child{min-width:0;flex:1} #estado{max-width:100%}.ampliar{padding:7px 10px;min-height:38px}:fullscreen .ampliar{display:none}@media(display-mode:fullscreen){header .ampliar{display:none}}</style>
+  header > div:first-child{min-width:0;flex:1} #estado{max-width:100%}.ampliar{padding:7px 10px;min-height:38px}:fullscreen .ampliar{display:none}@media(display-mode:fullscreen){header .ampliar{display:none}}#modo{font:inherit;color:var(--turquesa);background:var(--fondo);padding:4px 8px;border:1px solid var(--linea);border-radius:7px}header #turbo{min-height:44px;min-width:82px;padding:6px 12px}
+    </style>
 </head>
 <body>
   <div class="consola">
@@ -65,6 +66,7 @@
       <header>
         <div><h1>MECATRÓNICA</h1><span id="estado" role="status">Desconectado</span></div>
         <button type="button" class="ampliar">Pantalla completa</button><button id="conectar" type="button">Conectar</button>
+        <button id="turbo" type="button" aria-pressed="false">ϟ Turbo</button>
       </header>
       <div class="mandos">
         <div class="base-joystick">
@@ -76,15 +78,15 @@
             <input id="limite" type="range" min="0" max="100" value="59">
           </div>
           <div class="ajuste">
-            <label for="giro">Sensibilidad de giro <output id="valorGiro">100 %</output></label>
-            <input id="giro" type="range" min="0" max="100" value="100">
+            <label for="modo">Sensibilidad <select id="modo"><option value="play">Control de Play</option><option value="manual">Manual</option></select></label>
+            <div id="ajusteManual" hidden><label for="giro">Giro manual <output id="valorGiro">100 %</output></label>
+            <input id="giro" type="range" min="0" max="100" value="100"></div>
           </div>
           <div class="motores" aria-label="PWM solicitado">
             <div><div class="lectura">Izquierdo <output id="izq">0 %</output></div><div class="pista"><i class="barra" id="barraIzq"></i></div></div>
             <div><div class="lectura">Derecho <output id="der">0 %</output></div><div class="pista"><i class="barra" id="barraDer"></i></div></div>
           </div>
           <div class="acciones">
-            <button id="turbo" type="button" aria-pressed="false">ϟ Turbo</button>
             <button id="detener" type="button">■ Detener</button>
           </div>
         </section>
@@ -109,8 +111,6 @@
     let escrituraEnCurso = null;
     let dedoJoystick = null;
     let dedoTurbo = null;
-    let origenX = 0;
-    let origenY = 0;
     let x = 0;
     let y = 0;
     let pwmIzq = 0;
@@ -134,14 +134,14 @@
     }
     function calcularMotores() {
       const limiteNormal = Number(el("limite").value);
-      const sensibilidad = Number(el("giro").value);
+      const modoPlay = el("modo").value === "play";
       const limiteActual = dedoTurbo === null ? limiteNormal : 100;
-      const avance = aplicarZonaMuerta(y);
-      const giro = aplicarZonaMuerta(x) * sensibilidad / 100;
+      const avance = modoPlay ? y : aplicarZonaMuerta(y);
+      const giro = modoPlay ? x : aplicarZonaMuerta(x) * Number(el("giro").value) / 100;
       pwmIzq = Math.round(limiteActual * limitar(avance + giro));
       pwmDer = Math.round(limiteActual * limitar(avance - giro));
       el("valorLimite").value = limiteNormal + " %";
-      el("valorGiro").value = sensibilidad + " %";
+      el("valorGiro").value = el("giro").value + " %";
       mostrarMotor(el("izq"), el("barraIzq"), pwmIzq);
       mostrarMotor(el("der"), el("barraDer"), pwmDer);
     }
@@ -204,25 +204,27 @@
         desconectar(mensaje);
       } finally { conectar.disabled = false; }
     });
-    joystick.addEventListener("pointerdown", evento => {
-      if (dedoJoystick !== null) return;
-      centrarJoystick();
-      dedoJoystick = evento.pointerId;
-      origenX = evento.clientX;
-      origenY = evento.clientY;
-      joystick.setPointerCapture(dedoJoystick);
-      enviar();
-    });
-    joystick.addEventListener("pointermove", evento => {
-      if (evento.pointerId !== dedoJoystick) return;
-      const radio = joystick.getBoundingClientRect().width * .38;
-      x = (evento.clientX - origenX) / radio;
-      y = (origenY - evento.clientY) / radio;
+    function actualizarPalanca(evento) {
+      const rect = joystick.getBoundingClientRect();
+      const radio = joystick.clientWidth * 0.38;
+      if (!radio) return;
+      x = (evento.clientX - rect.left - rect.width / 2) / radio;
+      y = (rect.top + rect.height / 2 - evento.clientY) / radio;
       const magnitud = Math.max(1,Math.hypot(x,y));
       x /= magnitud; y /= magnitud;
       palanca.style.left = (50 + 38 * x) + "%";
       palanca.style.top = (50 - 38 * y) + "%";
       calcularMotores();
+    }
+    joystick.addEventListener("pointerdown", evento => {
+      if (dedoJoystick !== null) return;
+      dedoJoystick = evento.pointerId;
+      joystick.setPointerCapture(dedoJoystick);
+      actualizarPalanca(evento);
+      enviar();
+    });
+    joystick.addEventListener("pointermove", evento => {
+      if (evento.pointerId === dedoJoystick) actualizarPalanca(evento);
     });
     turbo.addEventListener("pointerdown", evento => {
       if (dedoTurbo !== null) return;
@@ -244,6 +246,10 @@
       });
     }
     function detener() { neutralizar(); enviar(); }
+    el("modo").addEventListener("change", () => {
+      el("ajusteManual").hidden = el("modo").value !== "manual";
+      calcularMotores();
+    });
     el("limite").addEventListener("input",calcularMotores);
     el("giro").addEventListener("input",calcularMotores);
     el("detener").addEventListener("pointerdown",detener);
